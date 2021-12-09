@@ -21,84 +21,84 @@ hbs.registerPartials(partialsPath);
 //Setup static directory to use
 app.use(express.static(publicDirectoryPath));
 app.get("", (req, res) => {
-    res.render("index", {
-        title: "weather App",
-        name: "rajinikanth reddy",
-    });
+  res.render("index", {
+    title: "weather App",
+    name: "rajinikanth reddy",
+  });
 });
 
 app.get("/about", (req, res) => {
-    res.render("About", {
-        name: "Jeevan REddy",
-        title: "About me",
-    });
+  res.render("About", {
+    name: "Jeevan REddy",
+    title: "About me",
+  });
 });
 
 app.get("/help", (req, res) => {
-    res.render("Help", {
-        helpText: "I would like to help you at any time",
-        title: "Help",
-        name: "Rajinikanth Reddy Varala",
-    });
+  res.render("Help", {
+    helpText: "I would like to help you at any time",
+    title: "Help",
+    name: "Rajinikanth Reddy Varala",
+  });
 });
 
 app.get("/weather", (req, res) => {
-    if (!req.query.address) {
+  if (!req.query.address) {
+    return res.send({
+      error: "Please provide an adddress",
+    });
+  }
+  geocode(
+    req.query.address,
+    (error, { latitude, longitude, location } = {}) => {
+      if (error) {
         return res.send({
-            error: "Please provide an adddress",
+          error,
         });
-    }
-    geocode(
-        req.query.address,
-        (error, { latitude, longitude, location } = {}) => {
-            if (error) {
-                return res.send({
-                    error,
-                });
-            }
-            forecast(latitude, longitude, (error, forecastData) => {
-                if (error) {
-                    return res.send({
-                        error,
-                    });
-                }
-                return res.send({
-                    location,
-                    forecast: forecastData,
-                    address: req.query.address,
-                });
-            });
+      }
+      forecast(latitude, longitude, (error, forecastData) => {
+        if (error) {
+          return res.send({
+            error,
+          });
         }
-    );
+        return res.send({
+          location,
+          forecast: forecastData,
+          address: req.query.address,
+        });
+      });
+    }
+  );
 });
 app.get("/products", (req, res) => {
-    if (!req.query.search) {
-        return res.send({
-            error: "You must providesearch term",
-        });
-    }
-
-    res.send({
-        products: [],
+  if (!req.query.search) {
+    return res.send({
+      error: "You must providesearch term",
     });
+  }
+
+  res.send({
+    products: [],
+  });
 });
 app.get("/help/*", (req, res) => {
-    res.render("error", {
-        title: "404",
-        name: "Varala Sanjay REddy",
-        errorText: "Help article Not Found",
-    });
+  res.render("error", {
+    title: "404",
+    name: "Varala Sanjay REddy",
+    errorText: "Help article Not Found",
+  });
 });
 app.get("*", (req, res) => {
-    res.render("error", {
-        title: "404",
-        name: "varala Janga Reddy",
-        errorText: "Page Not Found",
-    });
+  res.render("error", {
+    title: "404",
+    name: "varala Janga Reddy",
+    errorText: "Page Not Found",
+  });
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Example app listening at http://localhost:${port}`);
 });
 
 //command to restart server for every changes in app.js file and hbs file
